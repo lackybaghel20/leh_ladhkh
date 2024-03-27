@@ -13,6 +13,30 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+// Route::get('/', function () {
+    // return view('welcome');
+// });
+
+Route::group(['namespace' => 'App\Http\Controllers'], function()
+{   
+    /**
+     * Home Routes
+     */
+    Route::get('/', 'AdminController@index')->name('home.index');
+
+    Route::group(['middleware' => ['guest']], function() {
+        /**
+         * Login Routes
+         */
+        Route::get('/login', 'AdminController@show')->name('login.show');
+        Route::post('/login', 'AdminController@login')->name('login.perform');
+
+    });
+
+    Route::group(['middleware' => ['auth']], function() {
+        /**
+         * Logout Routes
+         */
+        Route::get('/logout', 'LogoutController@perform')->name('logout.perform');
+    });
 });
