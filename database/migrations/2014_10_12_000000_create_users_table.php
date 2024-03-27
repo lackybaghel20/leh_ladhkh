@@ -19,6 +19,8 @@ return new class extends Migration
             $table->string('password');
             $table->tinyInteger('user_type')->nullable();
             $table->string('phone_number')->nullable();
+            $table->tinyInteger('is_verify')->nullable();                        
+            $table->string('otp')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });

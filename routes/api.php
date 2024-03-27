@@ -20,6 +20,8 @@ use App\Http\Controllers\Auth\LoginRegisterController;
 Route::controller(LoginRegisterController::class)->group(function() {
     Route::post('/register', 'register');
     Route::post('/login', 'login');
+    Route::post('/login_with_otp', 'login_with_otp');
+    Route::post('/resend_otp', 'resend_otp');
 });
 
 // Public routes of product
