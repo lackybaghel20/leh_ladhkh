@@ -22,11 +22,12 @@ class LoginRegisterController extends Controller
     public function register(Request $request)
     {
         $validate = Validator::make($request->all(), [
-            'name' => 'required|string|max:250',
-            'email' => 'required|string|email:rfc,dns|max:250|unique:users,email',
+            'name' => 'required|string|max:250',            
+			'email' => 'required|string|email:rfc,dns|max:250|unique:users,email',
+
             'password' => 'required|string|min:8|confirmed'
         ]);
-
+			
         if($validate->fails()){
             return response()->json([
                 'status' => 'failed',
