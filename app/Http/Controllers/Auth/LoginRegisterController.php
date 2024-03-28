@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers\Auth;
 
 use App\Models\User;
@@ -66,8 +65,7 @@ class LoginRegisterController extends Controller
     public function login(Request $request)
     {
         $validate = Validator::make($request->all(), [
-            'phone_number' => 'required|string',
-            'password' => 'required|string'
+            'phone_number' => 'required|string'         
         ]);
 
         if($validate->fails()){
@@ -78,14 +76,11 @@ class LoginRegisterController extends Controller
             ], 403);  
         }
 
-        // Check email exist
-        $user = User::where('phone_number', $request->phone_number)->first();
-
-        // Check password
-        if(!$user || !Hash::check($request->password, $user->password)) {
+        $user = User::where('phone_number', $request->phone_number)->first();		
+        if(!$user) {
             return response()->json([
                 'status' => 'failed',
-                'message' => 'Invalid credentials'
+                'message' => 'Invalid phone number'
                 ], 401);
         }
 
@@ -109,14 +104,33 @@ class LoginRegisterController extends Controller
      */
     public function resend_otp(Request $request)
     {
+		 $validate = Validator::make($request->all(), [
+            'phone_number' => 'required|string'         
+        ]);
+
+        if($validate->fails()){
+            return response()->json([
+                'status' => 'failed',
+                'message' => 'Validation Error!',
+                'data' => $validate->errors(),
+            ], 403);  
+        }
+
 		$otp = rand ( 10000 , 99999 );
-		$user = User::where('email', $request->email)->first();
-        $data['token'] = $user->createToken($request->email)->plainTextToken;
+		$user = User::where('phone_number', $request->phone_number)->first();
+		if(!$user) {
+            return response()->json([
+                'status' => 'failed',
+                'message' => 'Invalid phone number'
+                ], 401);
+        }
+
+        $data['token'] = $user->createToken($request->phone_number)->plainTextToken;
         $data['otp'] = $otp;
 
 		$mail = new PHPMailer(true);
     
-		User::where('email', $request->email)->update(['otp' => $otp]);
+		User::where('phone_number', $request->phone_number)->update(['otp' => $otp]);
 		
        /* try {    
           
@@ -182,7 +196,7 @@ class LoginRegisterController extends Controller
     public function login_with_otp(Request $request)
     {
         $validate = Validator::make($request->all(), [            
-            'email' => 'required|string',
+            'phone_number' => 'required|string',
             'otp' => 'required|string'
         ]);
 
@@ -195,7 +209,15 @@ class LoginRegisterController extends Controller
         }
 
         // Check email exist
-        $user = User::where('email', $request->email)->first();
+        $user = User::where('phone_number', $request->phone_number)->first();
+		
+		if(!$user) {
+            return response()->json([
+                'status' => 'failed',
+                'message' => 'Invalid phone number'
+                ], 401);
+        }
+
 
         if( $user->otp != $request->otp) {
             return response()->json([
@@ -204,14 +226,14 @@ class LoginRegisterController extends Controller
                 ], 401);
         }
 
-        $data['token'] = $user->createToken($request->email)->plainTextToken;        
+        $data['token'] = $user->createToken($request->phone_number)->plainTextToken;        
         $data['user'] = $user;
         $response = [
             'status' => 'success',
             'message' => 'User is logged in successfully.',
             'data' => $data,
         ];
-		User::where('email', $request->email)->update(['otp' => '']);
+		User::where('phone_number', $request->phone_number)->update(['otp' => '']);
         return response()->json($response, 200);
     } 
 
