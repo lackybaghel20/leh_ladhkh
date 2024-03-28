@@ -24,7 +24,7 @@ class LoginRegisterController extends Controller
         $validate = Validator::make($request->all(), [
             'name' => 'required|string|max:250',            
 			'email' => 'required|string|email:rfc,dns|max:250|unique:users,email',
-
+			'phone_number' => 'required|string|unique:users,phone_number',
             'password' => 'required|string|min:8|confirmed'
         ]);
 			
