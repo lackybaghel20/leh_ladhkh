@@ -43,14 +43,14 @@ class LoginRequest extends FormRequest
         // logging users in with both (username and email)
         // we have to check if user has entered one or another
         $username = $this->get('username');
-
+		
         if ($this->isEmail($username)) {
             return [
                 'email' => $username,
                 'password' => $this->get('password')
             ];
         }
-
+		
         return $this->only('username', 'password');
     }
 
@@ -63,6 +63,7 @@ class LoginRequest extends FormRequest
      */
     private function isEmail($param)
     {
+		
         $factory = $this->container->make(ValidationFactory::class);
 
         return ! $factory->make(

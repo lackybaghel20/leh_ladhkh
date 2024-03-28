@@ -66,7 +66,7 @@ class LoginRegisterController extends Controller
     public function login(Request $request)
     {
         $validate = Validator::make($request->all(), [
-            'email' => 'required|string|email',
+            'phone_number' => 'required|string',
             'password' => 'required|string'
         ]);
 
@@ -79,7 +79,7 @@ class LoginRegisterController extends Controller
         }
 
         // Check email exist
-        $user = User::where('email', $request->email)->first();
+        $user = User::where('phone_number', $request->phone_number)->first();
 
         // Check password
         if(!$user || !Hash::check($request->password, $user->password)) {
@@ -89,7 +89,7 @@ class LoginRegisterController extends Controller
                 ], 401);
         }
 
-        $data['token'] = $user->createToken($request->email)->plainTextToken;
+        $data['token'] = $user->createToken($request->phone_number)->plainTextToken;
         $data['otp'] = rand ( 10000 , 99999 );
         $data['user'] = $user;
         $response = [
