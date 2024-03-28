@@ -1,11 +1,13 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Requests\LoginRequest;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use DataTables;
+
 class AdminController extends Controller
 {
      /**
@@ -13,8 +15,29 @@ class AdminController extends Controller
      * 
      * @return Renderable
      */
-    public function index()
+    public function index(Request $request)
     {
+        if ($request->ajax()) {
+            $data = User::select('*');
+			
+            return Datatables::of($data)
+                    ->addIndexColumn()
+                    ->addColumn('is_verify', function($row){       							
+							if($row->is_verify == 1){
+								$btn = "<span class='edit btn btn-primary btn-sm'>Verify</span>";
+							}else{
+								$btn = "<span  class='edit btn btn-danger btn-sm'>Not Verify</span>";
+								
+							}
+      
+                            return $btn; 
+                    })->addColumn('created_at', function($row){   
+                            return date("d/m/Y H:i A",strtotime($row->created_at));
+                    })
+                    ->rawColumns(['is_verify','created_at'])
+                    ->make(true);
+        }
+          
         return view('home.index');
     }
 
@@ -39,15 +62,6 @@ class AdminController extends Controller
     {
         $credentials = $request->getCredentials();
 		
-		// if(!$user || !Hash::check($request->password, $user->password)) {
-            // return response()->json([
-                // 'status' => 'failed',
-                // 'message' => 'Invalid credentials'
-                // ], 401);
-        // }
-
-
-		// print_r($credentials);die;	
         if(!Auth::validate($credentials)):
             return redirect()->to('login')
                 ->withErrors(trans('auth.failed'));
