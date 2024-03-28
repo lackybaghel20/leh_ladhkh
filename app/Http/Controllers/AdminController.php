@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Requests\LoginRequest;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
-
 class AdminController extends Controller
 {
      /**
@@ -39,6 +39,15 @@ class AdminController extends Controller
     {
         $credentials = $request->getCredentials();
 		
+		// if(!$user || !Hash::check($request->password, $user->password)) {
+            // return response()->json([
+                // 'status' => 'failed',
+                // 'message' => 'Invalid credentials'
+                // ], 401);
+        // }
+
+
+		// print_r($credentials);die;	
         if(!Auth::validate($credentials)):
             return redirect()->to('login')
                 ->withErrors(trans('auth.failed'));
