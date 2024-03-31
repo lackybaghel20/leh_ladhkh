@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Http\Requests\LoginRequest;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Redirect;
+
 use DataTables;
 
 class AdminController extends Controller
@@ -17,6 +19,13 @@ class AdminController extends Controller
      */
     public function index(Request $request)
     {
+		 if (!Auth::check()) {			 		
+								
+			 return Redirect::to('/login');
+		}
+
+		// echo "<pre>";print_r($user);die;
+		
         if ($request->ajax()) {
             $data = User::select('*');
 			
@@ -61,7 +70,7 @@ class AdminController extends Controller
     public function login(LoginRequest $request)
     {
         $credentials = $request->getCredentials();
-		
+			
         if(!Auth::validate($credentials)):
             return redirect()->to('login')
                 ->withErrors(trans('auth.failed'));
