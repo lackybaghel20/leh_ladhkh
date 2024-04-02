@@ -29,14 +29,12 @@
 				<input type="hidden" name="_token" value="{{ csrf_token() }}" />		
                     <div class="col-12">
                       <label for="email_id" class="form-label">Email Id</label>
-                      <div class="input-group has-validation">
-                        <span class="input-group-text" id="inputGroupPrepend">@</span>
+                      
                         <input type="text"  name="username" value="{{ old('username') }}" id="email_id" class="form-control"  required>
 						 @if ($errors->has('username'))
 							<div class="invalid-feedback">{{ $errors->first('username') }}</div>
 						@endif
-                        
-                      </div>
+
                     </div>
 
                     <div class="col-12">
