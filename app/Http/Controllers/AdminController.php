@@ -31,13 +31,24 @@ class AdminController extends Controller
             return Datatables::of($data)
                     ->addIndexColumn()
                     ->addColumn('is_verify', function($row){       							
-							if($row->is_verify == 1){
-								$btn = "<span class='edit btn btn-primary btn-sm'>Verify</span>";
-							}else{
-								$btn = "<span  class='edit btn btn-danger btn-sm'>Not Verify</span>";
+							// if($row->is_verify == 1){
+								$status = $row->is_verify == 1 ? 'checked' : '';
+								$status_val = $row->is_verify == 1 ? 'Verified' : 'Not Verified';
+								$btn = "<div class='form-check form-switch' style='text-align:center;'>
+								  <input class='form-check-input toggle-class' type='checkbox' id='flexSwitchCheckChecked' data-onstyle='success' data-offstyle='danger' data-toggle='toggle' data-on='Active' data-off='InActive' data-id=".$row->id." $status>
+								  <label class='form-check-label' for='flexSwitchCheckChecked'>$status_val</label>
+								</div>";
 								
-							}
-      
+								
+								
+								
+								// <span class='edit btn btn-primary btn-sm'>Verify</span>
+							// }else{
+								// $btn = "<span  class='edit btn btn-danger btn-sm'>Not Verify</span>";
+								
+							// }
+                              
+
                             return $btn; 
                     })->addColumn('created_at', function($row){   
                             return date("d/m/Y H:i A",strtotime($row->created_at));
@@ -50,6 +61,17 @@ class AdminController extends Controller
     }
 
 
+	public function changeStatus(Request $request)
+    {
+		// echo $request->user_id;
+		// echo $request->status;die;
+        $user = User::find($request->user_id);
+        $user->is_verify = $request->status;
+        $user->save();
+  
+        return response()->json(['success'=>'Status change successfully.']);
+    }
+	
 	public function manage_cities(Request $request)
     {
    
@@ -124,8 +146,7 @@ class AdminController extends Controller
      */
     public function manage_types(Request $request)
     {
-		 if (!Auth::check()) {			 		
-								
+		 if (!Auth::check()) {			 										
 			 return Redirect::to('/login');
 		}
 
@@ -160,8 +181,7 @@ class AdminController extends Controller
      */
     public function manage_models(Request $request)
     {
-		 if (!Auth::check()) {			 		
-								
+		 if (!Auth::check()) {			 										
 			 return Redirect::to('/login');
 		}
 
@@ -214,8 +234,19 @@ class AdminController extends Controller
             return redirect()->to('login')
                 ->withErrors(trans('auth.failed'));
         endif;
-
+		
         $user = Auth::getProvider()->retrieveByCredentials($credentials);
+		// print_r($user->user_type);die;
+		if($user->user_type != 1):
+            return redirect()->to('login')
+                ->withErrors("Not a valid credentials. Something went wrong.");
+        endif;
+		
+		if($user->is_verify != 1):
+            return redirect()->to('login')
+                ->withErrors("User not Verified please contact to admin.");
+        endif;
+		
 		
         Auth::login($user);
 

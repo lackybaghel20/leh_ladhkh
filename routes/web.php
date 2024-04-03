@@ -27,6 +27,7 @@ Route::group(['namespace' => 'App\Http\Controllers'], function()
     Route::get('/manage_models', 'AdminController@manage_models')->name('home.manage_models');
 
 	Route::post('/store_cities', 'AdminController@store_cities')->name('save_cities');	
+	Route::get('/changeStatus', 'AdminController@changeStatus')->name('changeStatus');	
 	
 	Route::delete('/destroy_cities/{id}', 'AdminController@destroy_cities');
 
