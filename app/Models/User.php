@@ -46,15 +46,5 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
-	
-	/**
-	 * Always encrypt the password when it is updated.
-	 *
-	  * @param $value
-	 * @return string
-	 */
-	// public function setPasswordAttribute($value)
-	// {
-	   // $this->attributes['password'] = bcrypt($value);
-	// }
+
 }

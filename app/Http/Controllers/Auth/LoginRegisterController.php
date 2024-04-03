@@ -2,6 +2,9 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Models\User;
+use App\Models\Allowed_cities;
+use App\Models\Vehical_types;
+use App\Models\Vehical_models;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
@@ -255,4 +258,97 @@ class LoginRegisterController extends Controller
             'message' => 'User is logged out successfully'
             ], 200);
     }    
+	
+	 public function allowed_cities(Request $request)
+    {
+        $validate = Validator::make($request->all(), [
+            'phone_number' => 'required|string'         
+        ]);
+
+        if($validate->fails()){
+            return response()->json([
+                'status' => 'failed',
+                'message' => 'Validation Error!',
+                'data' => $validate->errors(),
+            ], 403);  
+        }
+
+        $allowed_cities = Allowed_cities::select(['id','name'])->get();		
+        if(!$allowed_cities) {
+            return response()->json([
+                'status' => 'failed',
+                'message' => 'Invalid phone number'
+                ], 401);
+        }
+
+        $response = [
+            'status' => 'success',
+            'message' => 'Data fetch successfully.',
+            'data' => $allowed_cities,
+        ];
+
+        return response()->json($response, 200);
+    } 
+
+	public function get_vehical_type(Request $request)
+    {
+        $validate = Validator::make($request->all(), [
+            'phone_number' => 'required|string'         
+        ]);
+
+        if($validate->fails()){
+            return response()->json([
+                'status' => 'failed',
+                'message' => 'Validation Error!',
+                'data' => $validate->errors(),
+            ], 403);  
+        }
+
+        $Vehical_types = Vehical_types::select(['id','name'])->get();		
+        if(!$Vehical_types) {
+            return response()->json([
+                'status' => 'failed',
+                'message' => 'Invalid phone number'
+                ], 401);
+        }
+
+        $response = [
+            'status' => 'success',
+            'message' => 'Data fetch successfully.',
+            'data' => $Vehical_types,
+        ];
+
+        return response()->json($response, 200);
+    } 
+	
+	public function get_vehical_model(Request $request)
+    {
+        $validate = Validator::make($request->all(), [
+            'phone_number' => 'required|string'         
+        ]);
+
+        if($validate->fails()){
+            return response()->json([
+                'status' => 'failed',
+                'message' => 'Validation Error!',
+                'data' => $validate->errors(),
+            ], 403);  
+        }
+
+        $Vehical_models = Vehical_models::select(['id','name'])->get();		
+        if(!$Vehical_models) {
+            return response()->json([
+                'status' => 'failed',
+                'message' => 'Invalid phone number'
+                ], 401);
+        }
+
+        $response = [
+            'status' => 'success',
+            'message' => 'Data fetch successfully.',
+            'data' => $Vehical_models,
+        ];
+
+        return response()->json($response, 200);
+    } 
 }

@@ -22,32 +22,21 @@ class AdminController extends Controller
      */
     public function index(Request $request)
     {
-		 if (!Auth::check()) {			 		
-								
+		 if (!Auth::check()) {			 				
 			 return Redirect::to('/login');
 		}
 		$nav_bar = 'dashboard';
-        if ($request->ajax()) {
-            $data = User::select('*');
-			
+        if ($request->ajax()) {            
+			$data =  User::latest()->whereNotIn('user_type', [1])->get();
             return Datatables::of($data)
                     ->addIndexColumn()
-                    ->addColumn('is_verify', function($row){       							
-							// if($row->is_verify == 1){
-								$status = $row->is_verify == 1 ? 'checked' : '';
-								$status_val = $row->is_verify == 1 ? 'Verified' : 'Not Verified';
-								$btn = "<div class='form-check form-switch' style='text-align:center;'>
-								  <input class='form-check-input toggle-class' type='checkbox' id='flexSwitchCheckChecked' data-onstyle='success' data-offstyle='danger' data-toggle='toggle' data-on='Active' data-off='InActive' data-id=".$row->id." $status>
-								  <label class='form-check-label' for='flexSwitchCheckChecked'>$status_val</label>
-								</div>";
-							
-								// <span class='edit btn btn-primary btn-sm'>Verify</span>
-							// }else{
-								// $btn = "<span  class='edit btn btn-danger btn-sm'>Not Verify</span>";
-								
-							// }
-                              
-
+                    ->addColumn('is_verify', function($row){       														
+							$status = $row->is_verify == 1 ? 'checked' : '';
+							$status_val = $row->is_verify == 1 ? 'Verified' : 'Not Verified';
+							$btn = "<div class='form-check form-switch' style='text-align:center;'>
+							  <input class='form-check-input toggle-class' type='checkbox' id='flexSwitchCheckChecked' data-onstyle='success' data-offstyle='danger' data-toggle='toggle' data-on='Active' data-off='InActive' data-id=".$row->id." $status>
+							  <label class='form-check-label' for='flexSwitchCheckChecked'>$status_val</label>
+							</div>";							
                             return $btn; 
                     })->addColumn('created_at', function($row){   
                             return date("d/m/Y H:i A",strtotime($row->created_at));

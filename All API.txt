@@ -17,3 +17,13 @@ password:123456
 4) http://127.0.0.1:8000/api/login_with_otp
 phone_number:123456789
 otp:28381
+
+5) http://127.0.0.1:8000/api/allowed_cities
+phone_number:123456789
+
+6) http://127.0.0.1:8000/api/get_vehical_model
+phone_number:123456789
+
+7) http://127.0.0.1:8000/api/get_vehical_type
+phone_number:123456789
+
