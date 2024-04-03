@@ -26,7 +26,7 @@ class AdminController extends Controller
 								
 			 return Redirect::to('/login');
 		}
-		// $nav_bar = 'dashboard';
+		$nav_bar = 'dashboard';
         if ($request->ajax()) {
             $data = User::select('*');
 			
@@ -56,7 +56,7 @@ class AdminController extends Controller
                     ->make(true);
         }
           
-        return view('home.index');
+        return view('home.index',compact('nav_bar'));
     }
 
 
@@ -73,7 +73,7 @@ class AdminController extends Controller
     {
    
 		$allowed_cities = Allowed_cities::latest()->get();
-		// $nav_bar = 'manage_cities';
+		$nav_bar = 'manage_cities';
         if ($request->ajax()) {
 			
             return Datatables::of($allowed_cities)
@@ -96,7 +96,7 @@ class AdminController extends Controller
 	public function manage_vehical_types(Request $request)
     {   
 		$manage_vehical_types = Vehical_types::latest()->get();
-		// $nav_bar = 'manage_types';
+		$nav_bar = 'manage_types';
         if ($request->ajax()) {
 			
             return Datatables::of($manage_vehical_types)
@@ -113,12 +113,12 @@ class AdminController extends Controller
 				->make(true);
         }
       
-		return view('home.manage_types',compact('manage_vehical_types'));
+		return view('home.manage_types',compact('manage_vehical_types','nav_bar'));
     }
 	
 	public function manage_vehical_models(Request $request)
     {   
-		// $nav_bar = 'manage_models';
+		$nav_bar = 'manage_models';
 		$manage_models = Vehical_models::latest()->get();
         if ($request->ajax()) {
 			
@@ -136,7 +136,7 @@ class AdminController extends Controller
 				->make(true);
         }
       
-		return view('home.manage_models',compact('manage_models'));
+		return view('home.manage_models',compact('manage_models','nav_bar'));
     }
 
     public function save_models(Request $request)
