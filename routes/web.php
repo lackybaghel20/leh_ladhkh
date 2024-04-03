@@ -22,17 +22,22 @@ use App\Http\Controllers\AdminController;
 Route::group(['namespace' => 'App\Http\Controllers'], function()
 {   
     Route::get('/', 'AdminController@index')->name('home.index');
-    Route::get('/manage_cities', 'AdminController@manage_cities')->name('home.manage_cities');
-    Route::get('/manage_types', 'AdminController@manage_types')->name('home.manage_types');
-    Route::get('/manage_models', 'AdminController@manage_models')->name('home.manage_models');
-
+    Route::get('/manage_cities', 'AdminController@manage_cities')->name('manage_cities');
 	Route::post('/store_cities', 'AdminController@store_cities')->name('save_cities');	
-	Route::get('/changeStatus', 'AdminController@changeStatus')->name('changeStatus');	
-	
+	Route::get('/changeStatus', 'AdminController@changeStatus')->name('changeStatus');		
 	Route::delete('/destroy_cities/{id}', 'AdminController@destroy_cities');
-
-	Route::post('/manage_cities', 'AdminController@manage_cities')->name('manage_cities');
 	Route::get('/edit_cities/{id}', 'AdminController@edit_cities')->name('edit_cities');
+	
+	Route::post('/save_vehical_types', 'AdminController@save_vehical_types')->name('save_vehical_types');	
+	Route::get('/manage_vehical_types', 'AdminController@manage_vehical_types')->name('manage_vehical_types');
+	Route::delete('/destroy_vehical_types/{id}', 'AdminController@destroy_vehical_types');
+	Route::get('/edit_vehical_types/{id}', 'AdminController@edit_vehical_types')->name('edit_vehical_types');
+	
+	
+	Route::get('/manage_vehical_models', 'AdminController@manage_vehical_models')->name('manage_vehical_models');
+	Route::post('/save_models', 'AdminController@save_models')->name('save_models');	
+	Route::delete('/destroy_models/{id}', 'AdminController@destroy_models');
+	Route::get('/edit_models/{id}', 'AdminController@edit_models')->name('edit_models');
 
     Route::group(['middleware' => ['guest']], function() {       
         Route::get('/login', 'AdminController@show')->name('login.show');

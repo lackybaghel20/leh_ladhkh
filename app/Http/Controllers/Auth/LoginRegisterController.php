@@ -87,6 +87,9 @@ class LoginRegisterController extends Controller
         $data['token'] = $user->createToken($request->phone_number)->plainTextToken;
         $data['otp'] = rand ( 10000 , 99999 );
         $data['user'] = $user;
+
+        User::where('phone_number', $request->phone_number)->update(['otp' => $data['otp']]);
+        
         $response = [
             'status' => 'success',
             'message' => 'User is logged in successfully.',
@@ -196,8 +199,8 @@ class LoginRegisterController extends Controller
     public function login_with_otp(Request $request)
     {
         $validate = Validator::make($request->all(), [            
-            'phone_number' => 'required|string',
-            'otp' => 'required|string'
+            'phone_number' => 'required',
+            'otp' => 'required'
         ]);
 
         if($validate->fails()){

@@ -29,17 +29,15 @@
   <!-- Template Main CSS File -->
   <link href="assets/css/style.css" rel="stylesheet">
 
-  <!-- =======================================================
-  * Template Name: NiceAdmin
-  * Template URL: https://bootstrapmade.com/nice-admin-bootstrap-admin-html-template/
-  * Updated: Mar 17 2024 with Bootstrap v5.3.3
-  * Author: BootstrapMade.com
-  * License: https://bootstrapmade.com/license/
-  ======================================================== -->
 </head>
 
 <body>
 
+<style>
+.error{
+	color:red;
+}
+</style>
 
   <!-- ======= Sidebar ======= -->
   <aside id="sidebar" class="sidebar">
@@ -61,12 +59,18 @@
         <ul id="tables-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
           <li>
             <a href="/manage_cities">
-              <i class="bi bi-circle"></i><span>Manage Cities</span>
+              <i class="bi bi-circle"></i><span>Manage Allowed Cities</span>
             </a>
           </li>
 		  <li>
-            <a href="/manage_types">
+            <a href="/manage_vehical_types">
               <i class="bi bi-circle"></i><span>Manage Types</span>
+            </a>
+          </li>
+		  
+		  <li>
+            <a href="/manage_vehical_models">
+              <i class="bi bi-circle"></i><span>Manage Models</span>
             </a>
           </li>
         
