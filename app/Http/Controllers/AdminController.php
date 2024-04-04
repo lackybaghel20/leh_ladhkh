@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\Allowed_cities;
-use App\Models\Vehical_types;
-use App\Models\Vehical_models;
+use App\Models\Vehicle_types;
+use App\Models\Vehicle_models;
 use Illuminate\Http\Request;
 use App\Http\Requests\LoginRequest;
 use Illuminate\Support\Facades\Hash;
@@ -38,10 +38,23 @@ class AdminController extends Controller
 							  <label class='form-check-label' for='flexSwitchCheckChecked'>$status_val</label>
 							</div>";							
                             return $btn; 
+                    })->addColumn('user_type', function($row){       
+							$user_type ='';
+							if($row->user_type == 2)
+							{
+								$user_type ='Agent';
+							}else if($row->user_type == 2){
+								$user_type ='Driver';
+							}else if($row->user_type == 3){
+								$user_type ='Individual';
+							}
+							
+							$utype = "<span class='badge bg-primary'>$user_type</span>";							
+                            return $utype; 
                     })->addColumn('created_at', function($row){   
                             return date("d/m/Y H:i A",strtotime($row->created_at));
                     })
-                    ->rawColumns(['is_verify','created_at'])
+                    ->rawColumns(['is_verify','created_at','user_type'])
                     ->make(true);
         }
           
@@ -82,13 +95,13 @@ class AdminController extends Controller
 		return view('home.manage_cities',compact('allowed_cities','nav_bar'));
     }
      
-	public function manage_vehical_types(Request $request)
+	public function manage_vehicle_types(Request $request)
     {   
-		$manage_vehical_types = Vehical_types::latest()->get();
+		$manage_vehicle_types = Vehicle_types::latest()->get();
 		$nav_bar = 'manage_types';
         if ($request->ajax()) {
 			
-            return Datatables::of($manage_vehical_types)
+            return Datatables::of($manage_vehicle_types)
 				->addIndexColumn()
 				->addColumn('action', function($row){
 
@@ -102,13 +115,13 @@ class AdminController extends Controller
 				->make(true);
         }
       
-		return view('home.manage_types',compact('manage_vehical_types','nav_bar'));
+		return view('home.manage_types',compact('manage_vehicle_types','nav_bar'));
     }
 	
-	public function manage_vehical_models(Request $request)
+	public function manage_vehicle_models(Request $request)
     {   
 		$nav_bar = 'manage_models';
-		$manage_models = Vehical_models::latest()->get();
+		$manage_models = Vehicle_models::latest()->get();
         if ($request->ajax()) {
 			
             return Datatables::of($manage_models)
@@ -130,7 +143,7 @@ class AdminController extends Controller
 
     public function save_models(Request $request)
     {
-        Vehical_models::updateOrCreate([ 'id' => $request->id],[
+        Vehicle_models::updateOrCreate([ 'id' => $request->id],[
                 'id' => $request->id,
                 'name' => $request->name,
                 'description' => $request->description
@@ -139,9 +152,9 @@ class AdminController extends Controller
         return response()->json(['success'=>'Model saved successfully.']);
     }
 
-	public function save_vehical_types(Request $request)
+	public function save_vehicle_types(Request $request)
     {
-        Vehical_types::updateOrCreate([ 'id' => $request->id],[
+        Vehicle_types::updateOrCreate([ 'id' => $request->id],[
                 'id' => $request->id,
                 'name' => $request->name,
                 'description' => $request->description
@@ -191,28 +204,28 @@ class AdminController extends Controller
     }
 
 	
-    public function edit_vehical_types($id)
+    public function edit_vehicle_types($id)
     {
-        $Vehical_data = Vehical_types::find($id);
-        return response()->json($Vehical_data);
+        $Vehicle_data = Vehicle_types::find($id);
+        return response()->json($Vehicle_data);
     }
   
-    public function destroy_vehical_types($id)
+    public function destroy_vehicle_types($id)
     {
-        Vehical_types::find($id)->delete();
+        Vehicle_types::find($id)->delete();
      
-        return response()->json(['success'=>'Vehical type deleted successfully.']);
+        return response()->json(['success'=>'Vehicle type deleted successfully.']);
     }
 
 	public function edit_models($id)
     {
-        $model_data = Vehical_models::find($id);
+        $model_data = Vehicle_models::find($id);
         return response()->json($model_data);
     }
   
     public function destroy_models($id)
     {
-        Vehical_models::find($id)->delete();
+        Vehicle_models::find($id)->delete();
      
         return response()->json(['success'=>'Model deleted successfully.']);
     }

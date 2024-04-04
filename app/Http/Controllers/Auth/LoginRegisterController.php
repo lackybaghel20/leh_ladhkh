@@ -79,7 +79,7 @@ class LoginRegisterController extends Controller
             ], 403);  
         }
 
-        $user = User::where('phone_number', $request->phone_number)->first();		
+        $user = User::select(["id","name","email"])->where('phone_number', $request->phone_number)->first();		
         if(!$user) {
             return response()->json([
                 'status' => 'failed',

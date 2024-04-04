@@ -4,11 +4,11 @@
 
 
 <div class="pagetitle">
-  <h1>Manage Vehical Models</h1>
+  <h1>Manage Vehicle Models</h1>
   <nav>
 	<ol class="breadcrumb">
 	  <li class="breadcrumb-item">Home</li>
-	  <li class="breadcrumb-item">Manage Vehical Models</li>          
+	  <li class="breadcrumb-item">Manage Vehicle Models</li>          
 	</ol>
   </nav>
 </div><!-- End Page Title -->
@@ -19,7 +19,7 @@
 
 	  <div class="card">
 		<div class="card-body">
-		  <h5 class="card-title">Manage Vehical Models
+		  <h5 class="card-title">Manage Vehicle Models
 		  <a class="btn btn-info" href="javascript:void(0)" id="createNewProduct" style="float:right;"> Add Model</a>
 		  </h5>
 		   @auth
@@ -44,7 +44,7 @@
 	
 	<div class="modal fade show" id="ajaxModelexa" tabindex="-1"  aria-modal="true" role="dialog">
 		<div class="modal-dialog">
-		 <form id="vehicalType" name="vehicalType" class="form-horizontal">
+		 <form id="vehicleType" name="vehicleType" class="form-horizontal">
 		  <div class="modal-content">
 			<div class="modal-header">
 			  <h5 class="modal-title" id="modelHeading"></h5>
@@ -89,7 +89,7 @@
     var table = $('.data-table').DataTable({
         processing: true,
         serverSide: true,
-        ajax: "{{ route('manage_vehical_models') }}",
+        ajax: "{{ route('manage_vehicle_models') }}",
         columns: [
             {data: 'DT_RowIndex', name: 'DT_RowIndex'},
             {data: 'name', name: 'name'},
@@ -101,15 +101,15 @@
     $('#createNewProduct').click(function () {
         $('#savedata').val("create-product");
         $('#id').val('');
-        $('#vehicalType').trigger("reset");
-        $('#modelHeading').html("Add Vehical Model");
+        $('#vehicleType').trigger("reset");
+        $('#modelHeading').html("Add Vehicle Model");
         $('#ajaxModelexa').modal('show');
     });
     
     $('body').on('click', '.editProduct', function () {
       var id = $(this).data('id');
       $.get("{{ url('edit_models') }}" +'/' + id , function (data) {
-          $('#modelHeading').html("Update Vehical Model");
+          $('#modelHeading').html("Update Vehicle Model");
           $('#savedata').val("edit-user");
           $('#ajaxModelexa').modal('show');
           $('#id').val(data.id);
@@ -120,7 +120,7 @@
     
 	$(document).ready(function () {
 
-     $("#vehicalType").validate({
+     $("#vehicleType").validate({
          ignore: ":hidden",
          rules: {
              name: {
@@ -130,13 +130,13 @@
          },
          submitHandler: function (form) {
             $.ajax({
-				  data: $('#vehicalType').serialize(),
+				  data: $('#vehicleType').serialize(),
 				  url: "{{ route('save_models') }}",
 				  type: "POST",
 				  dataType: 'json',
 				  success: function (data) {
 			 
-					  $('#vehicalType').trigger("reset");
+					  $('#vehicleType').trigger("reset");
 					  $('#ajaxModelexa').modal('hide');
 					  table.draw();
 				 

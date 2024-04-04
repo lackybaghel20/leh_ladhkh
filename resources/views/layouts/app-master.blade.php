@@ -73,13 +73,13 @@ echo $nav_bar;
             </a>
           </li>
 		  <li>
-            <a href="/manage_vehical_types" class="{{ $nav_bar == 'manage_types' ? 'active' : '' }}">
+            <a href="/manage_vehicle_types" class="{{ $nav_bar == 'manage_types' ? 'active' : '' }}">
               <i class="bi bi-circle"></i><span>Manage Types</span>
             </a>
           </li>
 		  
 		  <li>
-            <a href="/manage_vehical_models" class="{{ $nav_bar == 'manage_models' ? 'active' : '' }}">
+            <a href="/manage_vehicle_models" class="{{ $nav_bar == 'manage_models' ? 'active' : '' }}">
               <i class="bi bi-circle"></i><span>Manage Models</span>
             </a>
           </li>

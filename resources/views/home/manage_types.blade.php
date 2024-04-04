@@ -3,11 +3,11 @@
 <meta name="csrf-token" content="{{ csrf_token() }}">
 
 <div class="pagetitle">
-  <h1>Manage Vehical Types</h1>
+  <h1>Manage Vehicle Types</h1>
   <nav>
 	<ol class="breadcrumb">
 	  <li class="breadcrumb-item">Home</li>
-	  <li class="breadcrumb-item">Manage Vehical Types</li>          
+	  <li class="breadcrumb-item">Manage Vehicle Types</li>          
 	</ol>
   </nav>
 </div><!-- End Page Title -->
@@ -18,7 +18,7 @@
 
 	  <div class="card">
 		<div class="card-body">
-		  <h5 class="card-title">Manage Vehical Types
+		  <h5 class="card-title">Manage Vehicle Types
 		  <a class="btn btn-info" href="javascript:void(0)" id="createNewProduct" style="float:right;"> Add Type</a>
 		  </h5>
 		   @auth
@@ -43,7 +43,7 @@
 	
 	<div class="modal fade show" id="ajaxModelexa" tabindex="-1"  aria-modal="true" role="dialog">
 		<div class="modal-dialog">
-		 <form id="vehicalType" name="vehicalType" class="form-horizontal">
+		 <form id="vehicleType" name="vehicleType" class="form-horizontal">
 		  <div class="modal-content">
 			<div class="modal-header">
 			  <h5 class="modal-title" id="modelHeading"></h5>
@@ -88,7 +88,7 @@
     var table = $('.data-table').DataTable({
         processing: true,
         serverSide: true,
-        ajax: "{{ route('manage_vehical_types') }}",
+        ajax: "{{ route('manage_vehicle_types') }}",
         columns: [
             {data: 'DT_RowIndex', name: 'DT_RowIndex'},
             {data: 'name', name: 'name'},
@@ -100,15 +100,15 @@
     $('#createNewProduct').click(function () {
         $('#savedata').val("create-product");
         $('#id').val('');
-        $('#vehicalType').trigger("reset");
-        $('#modelHeading').html("Add Vehical Type");
+        $('#vehicleType').trigger("reset");
+        $('#modelHeading').html("Add Vehicle Type");
         $('#ajaxModelexa').modal('show');
     });
     
     $('body').on('click', '.editProduct', function () {
       var id = $(this).data('id');
-      $.get("{{ url('edit_vehical_types') }}" +'/' + id , function (data) {
-          $('#modelHeading').html("Update Vehical Type");
+      $.get("{{ url('edit_vehicle_types') }}" +'/' + id , function (data) {
+          $('#modelHeading').html("Update Vehicle Type");
           $('#savedata').val("edit-user");
           $('#ajaxModelexa').modal('show');
           $('#id').val(data.id);
@@ -119,7 +119,7 @@
     
 	$(document).ready(function () {
 
-     $("#vehicalType").validate({
+     $("#vehicleType").validate({
          ignore: ":hidden",
          rules: {
              name: {
@@ -129,13 +129,13 @@
          },
          submitHandler: function (form) {
             $.ajax({
-				  data: $('#vehicalType').serialize(),
-				  url: "{{ route('save_vehical_types') }}",
+				  data: $('#vehicleType').serialize(),
+				  url: "{{ route('save_vehicle_types') }}",
 				  type: "POST",
 				  dataType: 'json',
 				  success: function (data) {
 			 
-					  $('#vehicalType').trigger("reset");
+					  $('#vehicleType').trigger("reset");
 					  $('#ajaxModelexa').modal('hide');
 					  table.draw();
 				 
@@ -168,7 +168,7 @@
 							
 			 $.ajax({
 				type: "DELETE",
-				url: "{{ url('destroy_vehical_types') }}"+'/'+id,
+				url: "{{ url('destroy_vehicle_types') }}"+'/'+id,
 				success: function (data) {
 					Swal.fire("Item deleted successfully", "", "success");
 					table.draw();

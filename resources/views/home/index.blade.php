@@ -29,8 +29,9 @@
 							<th>Name</th>
 							<th>Phone Number</th>
 							<th>Email</th>
-							<th>Status</th>
-							<th width="200px">Entered Date</th>
+							<th>User Type</th>
+							<th  width="100px">Status</th>
+							<th>Entered Date</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -63,6 +64,7 @@
 				{data: 'name', name: 'name'},
 				{data: 'phone_number', name: 'phone_number'},
 				{data: 'email', name: 'email'},
+				{data: 'user_type', name: 'user_type'},
 				{data: 'is_verify', name: 'is_verify'},
 				{data: 'created_at', name: 'created_at', orderable: false, searchable: false},
 			]
