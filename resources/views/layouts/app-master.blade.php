@@ -66,21 +66,27 @@ echo $nav_bar;
         <a class="nav-link {{ ($nav_bar == 'manage_cities' || $nav_bar == 'manage_types' || $nav_bar == 'manage_models') ? '' : 'collapsed' }}" data-bs-target="#tables-nav" data-bs-toggle="collapse" href="#">
           <i class="bi bi-layout-text-window-reverse"></i><span>Control Panel</span><i class="bi bi-chevron-down ms-auto"></i>
         </a>
-        <ul id="tables-nav" class="nav-content {{ ($nav_bar == 'manage_cities' || $nav_bar == 'manage_types' || $nav_bar == 'manage_models') ? 'collapse show' : 'collapse ' }}" data-bs-parent="#sidebar-nav">
+        <ul id="tables-nav" class="nav-content {{ ($nav_bar == 'manage_users' || $nav_bar == 'manage_cities' || $nav_bar == 'manage_types' || $nav_bar == 'manage_models') ? 'collapse show' : 'collapse ' }}" data-bs-parent="#sidebar-nav">
           <li>
+            <a href="/manage_users" class="{{ $nav_bar == 'manage_users' ? 'active' : '' }}">
+              <i class="bi bi-circle"></i><span>Manage Users</span>
+            </a>
+          </li>
+		  
+		  <li>
             <a href="/manage_cities" class="{{ $nav_bar == 'manage_cities' ? 'active' : '' }}">
               <i class="bi bi-circle"></i><span>Manage Cities</span>
             </a>
           </li>
 		  <li>
             <a href="/manage_vehicle_types" class="{{ $nav_bar == 'manage_types' ? 'active' : '' }}">
-              <i class="bi bi-circle"></i><span>Manage Types</span>
+              <i class="bi bi-circle"></i><span>Manage Vehicle  Types</span>
             </a>
           </li>
 		  
 		  <li>
             <a href="/manage_vehicle_models" class="{{ $nav_bar == 'manage_models' ? 'active' : '' }}">
-              <i class="bi bi-circle"></i><span>Manage Models</span>
+              <i class="bi bi-circle"></i><span>Manage Vehicle  Models</span>
             </a>
           </li>
         

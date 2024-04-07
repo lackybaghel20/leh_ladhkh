@@ -27,3 +27,7 @@ phone_number:123456789
 7) http://127.0.0.1:8000/api/get_vehical_type
 phone_number:123456789
 
+8) http://127.0.0.1:8000/api/check_token_exists
+phone_number:123456789
+token:12655588778
+

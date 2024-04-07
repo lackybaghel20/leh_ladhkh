@@ -22,6 +22,9 @@ use App\Http\Controllers\AdminController;
 Route::group(['namespace' => 'App\Http\Controllers'], function()
 {   
     Route::get('/', 'AdminController@index')->name('home.index');
+    Route::get('/manage_users', 'AdminController@manage_users')->name('manage_users');
+	
+	
     Route::get('/manage_cities', 'AdminController@manage_cities')->name('manage_cities');
 	Route::post('/store_cities', 'AdminController@store_cities')->name('save_cities');	
 	Route::get('/changeStatus', 'AdminController@changeStatus')->name('changeStatus');		

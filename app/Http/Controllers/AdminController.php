@@ -22,10 +22,19 @@ class AdminController extends Controller
      */
     public function index(Request $request)
     {
+		if (!Auth::check()) {			 				
+			 return Redirect::to('/login');
+		}
+		$nav_bar = 'dashboard';       
+        return view('home.index',compact('nav_bar'));
+    }
+
+	public function manage_users(Request $request)
+    {
 		 if (!Auth::check()) {			 				
 			 return Redirect::to('/login');
 		}
-		$nav_bar = 'dashboard';
+		$nav_bar = 'manage_users';
         if ($request->ajax()) {            
 			$data =  User::latest()->whereNotIn('user_type', [1])->get();
             return Datatables::of($data)
@@ -58,7 +67,7 @@ class AdminController extends Controller
                     ->make(true);
         }
           
-        return view('home.index',compact('nav_bar'));
+        return view('home.manage_users',compact('nav_bar'));
     }
 
 
@@ -73,7 +82,9 @@ class AdminController extends Controller
 	
 	public function manage_cities(Request $request)
     {
-   
+		if (!Auth::check()) {			 				
+			 return Redirect::to('/login');
+		}
 		$allowed_cities = Allowed_cities::latest()->get();
 		$nav_bar = 'manage_cities';
         if ($request->ajax()) {
@@ -97,6 +108,9 @@ class AdminController extends Controller
      
 	public function manage_vehicle_types(Request $request)
     {   
+		if (!Auth::check()) {			 				
+			 return Redirect::to('/login');
+		}
 		$manage_vehicle_types = Vehicle_types::latest()->get();
 		$nav_bar = 'manage_types';
         if ($request->ajax()) {
@@ -120,6 +134,9 @@ class AdminController extends Controller
 	
 	public function manage_vehicle_models(Request $request)
     {   
+		if (!Auth::check()) {			 				
+			 return Redirect::to('/login');
+		}
 		$nav_bar = 'manage_models';
 		$manage_models = Vehicle_models::latest()->get();
         if ($request->ajax()) {

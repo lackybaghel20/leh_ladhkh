@@ -3,8 +3,8 @@ namespace App\Http\Controllers\Auth;
 
 use App\Models\User;
 use App\Models\Allowed_cities;
-use App\Models\Vehical_types;
-use App\Models\Vehical_models;
+use App\Models\Vehicle_types;
+use App\Models\Vehicle_models;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
@@ -239,7 +239,7 @@ class LoginRegisterController extends Controller
             'message' => 'User is logged in successfully.',
             'data' => $data,
         ];
-		User::where('phone_number', $request->phone_number)->update(['otp' => '']);
+		User::where('phone_number', $request->phone_number)->update(['otp' => '','remember_token' => $data['token']]);
         return response()->json($response, 200);
     } 
 
@@ -290,7 +290,7 @@ class LoginRegisterController extends Controller
         return response()->json($response, 200);
     } 
 
-	public function get_vehical_type(Request $request)
+	public function get_vehicle_type(Request $request)
     {
         $validate = Validator::make($request->all(), [
             'phone_number' => 'required|string'         
@@ -304,8 +304,8 @@ class LoginRegisterController extends Controller
             ], 403);  
         }
 
-        $Vehical_types = Vehical_types::select(['id','name'])->get();		
-        if(!$Vehical_types) {
+        $Vehicle_types = Vehicle_types::select(['id','name'])->get();		
+        if(!$Vehicle_types) {
             return response()->json([
                 'status' => 'failed',
                 'message' => 'Invalid phone number'
@@ -315,13 +315,13 @@ class LoginRegisterController extends Controller
         $response = [
             'status' => 'success',
             'message' => 'Data fetch successfully.',
-            'data' => $Vehical_types,
+            'data' => $Vehicle_types,
         ];
 
         return response()->json($response, 200);
     } 
 	
-	public function get_vehical_model(Request $request)
+	public function get_vehicle_model(Request $request)
     {
         $validate = Validator::make($request->all(), [
             'phone_number' => 'required|string'         
@@ -335,20 +335,51 @@ class LoginRegisterController extends Controller
             ], 403);  
         }
 
-        $Vehical_models = Vehical_models::select(['id','name'])->get();		
-        if(!$Vehical_models) {
+        $Vehicle_models = Vehicle_models::select(['id','name'])->get();		
+       
+		if (is_null($Vehicle_models->first())) {
             return response()->json([
                 'status' => 'failed',
                 'message' => 'Invalid phone number'
-                ], 401);
+            ], 200);
         }
-
+		
         $response = [
             'status' => 'success',
             'message' => 'Data fetch successfully.',
-            'data' => $Vehical_models,
+            'data' => $Vehicle_models,
         ];
 
+        return response()->json($response, 200);
+    } 
+	
+	 public function check_token_exists(Request $request)
+    {
+        $validate = Validator::make($request->all(), [            
+            'phone_number' => 'required',
+            'token' => 'required'
+        ]);
+
+        if($validate->fails()){
+            return response()->json([
+                'status' => 'failed',
+                'message' => 'Validation Error!',
+                'data' => $validate->errors(),
+            ], 403);  
+        }
+		$rtoken = $request->token;
+        $user = User::select("id")->where('phone_number', $request->phone_number)->where('remember_token',$rtoken)->get();
+		if (is_null($user->first())) {
+            return response()->json([
+                'status' => 'failed',
+                'message' => 'Invalid Credentials',
+            ], 200);
+        }
+		
+        $response = [
+            'status' => 'success',
+            'message' => 'Token verified successfully',
+        ];		
         return response()->json($response, 200);
     } 
 }
