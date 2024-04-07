@@ -38,7 +38,6 @@ Route::controller(ProductController::class)->group(function() {
 // Protected routes of product and logout
 Route::middleware('auth:sanctum')->group( function () {
     Route::post('/logout', [LoginRegisterController::class, 'logout']);
-    
 
     Route::controller(ProductController::class)->group(function() {
         Route::post('/products', 'store');

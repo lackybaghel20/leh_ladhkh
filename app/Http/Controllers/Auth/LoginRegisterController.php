@@ -382,4 +382,5 @@ class LoginRegisterController extends Controller
         ];		
         return response()->json($response, 200);
     } 
+	
 }
