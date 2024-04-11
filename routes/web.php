@@ -42,6 +42,12 @@ Route::group(['namespace' => 'App\Http\Controllers'], function()
 	Route::delete('/destroy_models/{id}', 'AdminController@destroy_models');
 	Route::get('/edit_models/{id}', 'AdminController@edit_models')->name('edit_models');
 
+
+	Route::get('/manage_vehicle_name', 'AdminController@manage_vehicle_name')->name('manage_vehicle_name');
+	Route::post('/save_vehicle_name', 'AdminController@save_vehicle_name')->name('save_vehicle_name');	
+	Route::delete('/destroy_vehicle_name/{id}', 'AdminController@destroy_vehicle_name');
+	Route::get('/edit_vehicle_name/{id}', 'AdminController@edit_vehicle_name')->name('edit_vehicle_name');
+ 
     Route::group(['middleware' => ['guest']], function() {       
         Route::get('/login', 'AdminController@show')->name('login.show');
         Route::post('/login', 'AdminController@login')->name('login.perform');

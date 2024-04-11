@@ -5,6 +5,7 @@ use App\Models\User;
 use App\Models\Allowed_cities;
 use App\Models\Vehicle_types;
 use App\Models\Vehicle_models;
+use App\Models\Vehicle_names;
 use Illuminate\Http\Request;
 use App\Http\Requests\LoginRequest;
 use Illuminate\Support\Facades\Hash;
@@ -15,11 +16,6 @@ use DataTables;
 
 class AdminController extends Controller
 {
-     /**
-     * Display login page.
-     * 
-     * @return Renderable
-     */
     public function index(Request $request)
     {
 		if (!Auth::check()) {			 				
@@ -303,4 +299,64 @@ class AdminController extends Controller
     {
         return redirect()->intended();
     }
+	
+	public function manage_vehicle_name(Request $request)
+    {   
+		if (!Auth::check()) {			 				
+			 return Redirect::to('/login');
+		}
+		$nav_bar = 'manage_vname';
+		
+		$manage_vehicle_name = Vehicle_names::select(['vehicle_names.id as vid','vehicle_names.vname','vehicle_models.name as vtype','vehicle_types.name as vmodel','vehicle_names.description'])
+			->join('vehicle_models', 'vehicle_models.id', '=', 'vehicle_names.vmodel')
+			->join('vehicle_types', 'vehicle_types.id', '=', 'vehicle_names.vtype')
+			->orderBy('vehicle_names.id', 'desc')
+            ->get();
+			
+		
+		$manage_vehicle_models = Vehicle_models::select(["id","name"])->get();
+		$manage_vehicle_types = Vehicle_types::select(["id","name"])->get();
+        if ($request->ajax()) {
+			
+            return Datatables::of($manage_vehicle_name)
+				->addIndexColumn()
+				->addColumn('action', function($row){
+
+					   $btn = '<a href="javascript:void(0)" data-toggle="tooltip"  data-id="'.$row->vid.'" data-original-title="Edit" class="edit btn btn-primary btn-sm editProduct">Edit</a>';
+
+					   $btn = $btn.' <a href="javascript:void(0)" data-toggle="tooltip"  data-id="'.$row->vid.'" data-original-title="Delete" class="btn btn-danger btn-sm deleteProduct">Delete</a>';
+
+						return $btn;
+				})
+				->rawColumns(['action'])
+				->make(true);
+        }
+      
+		return view('home.manage_vehicle_name',compact('manage_vehicle_name','nav_bar','manage_vehicle_models','manage_vehicle_types'));
+    }
+	
+	public function save_vehicle_name(Request $request)
+    {
+        Vehicle_names::updateOrCreate([ 'id' => $request->id],[
+                'id' => $request->id, 
+                'vname' => $request->vehicle_name,
+                'vtype' => $request->vehicle_type,
+                'vmodel' => $request->vehicle_model,
+                'description' => $request->description
+        ]);          
+        return response()->json(['success'=>'Vehicle name saved successfully.']);
+    }
+	
+	public function edit_vehicle_name($id)
+    {
+        $vehicle_name_data = Vehicle_names::find($id);
+        return response()->json($vehicle_name_data);
+    }
+  
+    public function destroy_vehicle_name($id)
+    {
+        Vehicle_names::find($id)->delete();
+        return response()->json(['success'=>'Vehicle name deleted successfully.']);
+    }
+	
 }
