@@ -16,8 +16,8 @@ class ProductController extends Controller
      */
     public function index()
     {
+      
         $products = Product::latest()->get();
-        
         if (is_null($products->first())) {
             return response()->json([
                 'status' => 'failed',
@@ -38,7 +38,7 @@ class ProductController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
-    {
+    { 
         $validate = Validator::make($request->all(), [
             'name' => 'required|string|max:250',
             'description' => 'required|string|'

@@ -7,7 +7,9 @@ use App\Models\Vehicle_types;
 use App\Models\Vehicle_models;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
@@ -15,13 +17,58 @@ use Validator;
 
 class LoginRegisterController extends Controller
 {
+	public function __construct()
+    {
+        $this->middleware('auth:api', ['except' => ['login','register','refresh','logout','token_mismatch']]);
+    }
      /**
      * Register a new user.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function register(Request $request)
+	 
+	 public function register(Request $request)
+	 {
+		
+        $validate = Validator::make($request->all(), [
+            'name' => 'required|string|max:250',            
+			'email' => 'required|string|email:rfc,dns|max:250|unique:users,email',
+			'phone_number' => 'required|string|unique:users,phone_number',
+            'password' => 'required|string|min:8|confirmed'
+        ]);
+			
+        if($validate->fails()){
+            return response()->json([
+                'status' => 'failed',
+                'message' => 'Validation Error!',
+                'data' => $validate->errors(),
+            ], 403);
+        }
+ 
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'phone_number' => $request->phone_number,
+            'user_type' => $request->user_type,
+            'is_verfiy' => 0,
+            'password' => Hash::make($request->password)
+        ]);
+        $token = Auth::guard('api')->login($user);
+		$user['token'] = $token;
+        return response()->json([
+            'status' => 'success',
+            'message' => 'User created successfully',
+            'user' => $user,
+            'authorisation' => [
+                'token' => $token,
+                'type' => 'bearer',
+            ]
+        ]);
+    }
+	
+	
+    public function register_old(Request $request)
     {
         $validate = Validator::make($request->all(), [
             'name' => 'required|string|max:250',            
@@ -65,6 +112,35 @@ class LoginRegisterController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
+	 
+	 public function login_old(Request $request)
+    {
+        $request->validate([
+            'phone_number' => 'required|string' 
+        ]);
+        // $credentials = $request->only('phone_number');
+		$credentials = User::select(["id","name","email"])->where('phone_number', $request->phone_number)->first();
+        $token = Auth::guard('api')->login($credentials);
+        if (!$token) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Unauthorized',
+            ], 401);
+        }
+
+        $user = Auth::guard('api')->user();
+        return response()->json([
+                'status' => 'success',
+                'user' => $user,
+                'authorisation' => [
+                    'token' => $token,
+                    'type' => 'bearer',
+                ]
+            ]);
+
+    }
+	
+	
     public function login(Request $request)
     {
         $validate = Validator::make($request->all(), [
@@ -86,8 +162,8 @@ class LoginRegisterController extends Controller
                 'message' => 'Invalid phone number'
                 ], 401);
         }
-
-        $data['token'] = $user->createToken($request->phone_number)->plainTextToken;
+		$data['token']  = Auth::guard('api')->login($user);
+        // $data['token'] = $user->createToken($request->phone_number)->plainTextToken;
         $data['otp'] = rand ( 10000 , 99999 );
         $data['user'] = $user;
 
@@ -250,7 +326,7 @@ class LoginRegisterController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function logout(Request $request)
+    public function logout_old(Request $request)
     {
         auth()->user()->tokens()->delete();
         return response()->json([
@@ -259,25 +335,23 @@ class LoginRegisterController extends Controller
             ], 200);
     }    
 	
-	 public function allowed_cities(Request $request)
+	public function logout()
     {
-        $validate = Validator::make($request->all(), [
-            'phone_number' => 'required|string'         
+        Auth::guard('api')->logout();
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Successfully logged out',
         ]);
-
-        if($validate->fails()){
-            return response()->json([
-                'status' => 'failed',
-                'message' => 'Validation Error!',
-                'data' => $validate->errors(),
-            ], 403);  
-        }
-
+    }
+	
+	
+	public function allowed_cities(Request $request)
+    {
         $allowed_cities = Allowed_cities::select(['id','name'])->get();		
         if(!$allowed_cities) {
             return response()->json([
                 'status' => 'failed',
-                'message' => 'Invalid phone number'
+                'message' => 'No records found'
                 ], 401);
         }
 
@@ -292,26 +366,14 @@ class LoginRegisterController extends Controller
 
 	public function get_vehicle_type(Request $request)
     {
-        $validate = Validator::make($request->all(), [
-            'phone_number' => 'required|string'         
-        ]);
-
-        if($validate->fails()){
-            return response()->json([
-                'status' => 'failed',
-                'message' => 'Validation Error!',
-                'data' => $validate->errors(),
-            ], 403);  
-        }
-
         $Vehicle_types = Vehicle_types::select(['id','name'])->get();		
-        if(!$Vehicle_types) {
+
+		if (count($Vehicle_types) == 0) {
             return response()->json([
                 'status' => 'failed',
-                'message' => 'Invalid phone number'
-                ], 401);
+                'message' => 'No records found'
+            ], 200);
         }
-
         $response = [
             'status' => 'success',
             'message' => 'Data fetch successfully.',
@@ -323,24 +385,12 @@ class LoginRegisterController extends Controller
 	
 	public function get_vehicle_model(Request $request)
     {
-        $validate = Validator::make($request->all(), [
-            'phone_number' => 'required|string'         
-        ]);
-
-        if($validate->fails()){
-            return response()->json([
-                'status' => 'failed',
-                'message' => 'Validation Error!',
-                'data' => $validate->errors(),
-            ], 403);  
-        }
-
         $Vehicle_models = Vehicle_models::select(['id','name'])->get();		
        
-		if (is_null($Vehicle_models->first())) {
+		if (count($Vehicle_models) == 0) {
             return response()->json([
                 'status' => 'failed',
-                'message' => 'Invalid phone number'
+                'message' => 'No records found'
             ], 200);
         }
 		
@@ -348,6 +398,16 @@ class LoginRegisterController extends Controller
             'status' => 'success',
             'message' => 'Data fetch successfully.',
             'data' => $Vehicle_models,
+        ];
+
+        return response()->json($response, 200);
+    } 
+	
+	public function token_mismatch(Request $request)
+    {
+        $response = [
+            'status' => 'failed',
+            'message' => 'Token mismatch'            
         ];
 
         return response()->json($response, 200);
@@ -382,5 +442,17 @@ class LoginRegisterController extends Controller
         ];		
         return response()->json($response, 200);
     } 
+	
+	 public function refresh()
+    {
+        return response()->json([
+            'status' => 'success',
+            'user' => Auth::guard('api')->user(),
+            'authorisation' => [
+                'token' => Auth::guard('api')->refresh(),
+                'type' => 'bearer',
+            ]
+        ]);
+    }
 	
 }

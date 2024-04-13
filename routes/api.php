@@ -19,13 +19,11 @@ use App\Http\Controllers\Auth\LoginRegisterController;
 // Public routes of authtication
 Route::controller(LoginRegisterController::class)->group(function() {
     Route::post('/register', 'register');
-    Route::post('/login', 'login');
+    Route::get('/token_mismatch', 'token_mismatch')->name('token_mismatch');
+    Route::post('/login', 'login')->name('login');
     Route::post('/login_with_otp', 'login_with_otp');
-    Route::post('/resend_otp', 'resend_otp');
-	Route::post('/allowed_cities', 'allowed_cities');
-	Route::post('/get_vehicle_type', 'get_vehicle_type');
-	Route::post('/get_vehicle_model', 'get_vehicle_model');
-	Route::post('/check_token_exists', 'check_token_exists');
+    Route::post('/resend_otp', 'resend_otp');	
+    Route::post('/refresh', 'refresh');	
 });
 
 // Public routes of product
@@ -36,12 +34,19 @@ Route::controller(ProductController::class)->group(function() {
 });
 
 // Protected routes of product and logout
-Route::middleware('auth:sanctum')->group( function () {
+// Route::middleware('auth:sanctum')->group( function () {
     Route::post('/logout', [LoginRegisterController::class, 'logout']);
 
+	Route::controller(LoginRegisterController::class)->group(function() {
+		Route::get('/allowed_cities', 'allowed_cities');
+		Route::get('/get_vehicle_type', 'get_vehicle_type');
+		Route::get('/get_vehicle_model', 'get_vehicle_model');
+		Route::post('/check_token_exists', 'check_token_exists');
+	});
+	
     Route::controller(ProductController::class)->group(function() {
         Route::post('/products', 'store');
         Route::post('/products/{id}', 'update');
         Route::delete('/products/{id}', 'destroy');
     });
-});
+// });

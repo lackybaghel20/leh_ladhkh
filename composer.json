@@ -10,6 +10,7 @@
         "laravel/framework": "^10.10",
         "laravel/sanctum": "^3.3",
         "laravel/tinker": "^2.8",
+        "php-open-source-saver/jwt-auth": "^2.2",
         "phpmailer/phpmailer": "^6.9",
         "yajra/laravel-datatables": "10.0"
     },
