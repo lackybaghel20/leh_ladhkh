@@ -37,6 +37,7 @@ class User extends Authenticatable implements JWTSubject
         'password',
         'remember_token',
     ];
+	protected $primaryKey = "id";
 
     /**
      * The attributes that should be cast.

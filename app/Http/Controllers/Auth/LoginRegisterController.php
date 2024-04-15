@@ -51,7 +51,7 @@ class LoginRegisterController extends Controller
             'email' => $request->email,
             'phone_number' => $request->phone_number,
             'user_type' => $request->user_type,
-            'is_verfiy' => 0,
+            'is_verify' => 0,
             'password' => Hash::make($request->password)
         ]);
         $token = Auth::guard('api')->login($user);
@@ -59,11 +59,7 @@ class LoginRegisterController extends Controller
         return response()->json([
             'status' => 'success',
             'message' => 'User created successfully',
-            'user' => $user,
-            'authorisation' => [
-                'token' => $token,
-                'type' => 'bearer',
-            ]
+            'user' => $user
         ]);
     }
 	
@@ -90,7 +86,7 @@ class LoginRegisterController extends Controller
             'email' => $request->email,
             'phone_number' => $request->phone_number,
             'user_type' => $request->user_type,
-            'is_verfiy' => 0,
+            'is_verify' => 0,
             'password' => Hash::make($request->password)
         ]);
 
@@ -131,11 +127,7 @@ class LoginRegisterController extends Controller
         $user = Auth::guard('api')->user();
         return response()->json([
                 'status' => 'success',
-                'user' => $user,
-                'authorisation' => [
-                    'token' => $token,
-                    'type' => 'bearer',
-                ]
+                'user' => $user
             ]);
 
     }
@@ -155,11 +147,13 @@ class LoginRegisterController extends Controller
             ], 403);  
         }
 
-        $user = User::select(["id","name","email"])->where('phone_number', $request->phone_number)->first();		
-        if(!$user) {
+        $user = User::select(["id","name","email"])->where('is_verify', 1)->where('phone_number', $request->phone_number)->first();		
+       
+
+		if(!$user) {
             return response()->json([
                 'status' => 'failed',
-                'message' => 'Invalid phone number'
+                'message' => 'Invalid user'
                 ], 401);
         }
 		$data['token']  = Auth::guard('api')->login($user);

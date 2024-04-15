@@ -270,7 +270,7 @@ class AdminController extends Controller
         endif;
 		
         $user = Auth::getProvider()->retrieveByCredentials($credentials);
-		// print_r($user->user_type);die;
+		
 		if($user->user_type != 1):
             return redirect()->to('login')
                 ->withErrors("Not a valid credentials. Something went wrong.");
@@ -281,7 +281,7 @@ class AdminController extends Controller
                 ->withErrors("User not Verified please contact to admin.");
         endif;
 		
-		
+		// Auth::guard('web')->login($user);
         Auth::login($user);
 
         return $this->authenticated($request, $user);
