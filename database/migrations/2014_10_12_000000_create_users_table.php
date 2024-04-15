@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('phone_number')->nullable();
             $table->tinyInteger('is_verify')->nullable();                        
             $table->string('otp')->nullable();
+            $table->string('link_verify')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });

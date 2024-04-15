@@ -28,6 +28,7 @@ Route::group(['namespace' => 'App\Http\Controllers'], function()
     Route::get('/manage_cities', 'AdminController@manage_cities')->name('manage_cities');
 	Route::post('/store_cities', 'AdminController@store_cities')->name('save_cities');	
 	Route::get('/changeStatus', 'AdminController@changeStatus')->name('changeStatus');		
+	Route::get('/verify_user_via_link/{id}/{token}', 'AdminController@verify_user_via_link');		
 	Route::delete('/destroy_cities/{id}', 'AdminController@destroy_cities');
 	Route::get('/edit_cities/{id}', 'AdminController@edit_cities')->name('edit_cities');
 	

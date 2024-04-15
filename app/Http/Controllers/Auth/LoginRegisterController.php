@@ -30,7 +30,6 @@ class LoginRegisterController extends Controller
 	 
 	 public function register(Request $request)
 	 {
-		
         $validate = Validator::make($request->all(), [
             'name' => 'required|string|max:250',            
 			'email' => 'required|string|email:rfc,dns|max:250|unique:users,email',
@@ -54,8 +53,16 @@ class LoginRegisterController extends Controller
             'is_verify' => 0,
             'password' => Hash::make($request->password)
         ]);
+		
         $token = Auth::guard('api')->login($user);
 		$user['token'] = $token;
+		
+		$link_verify_token = Hash::make(rand());
+		/* send link in email */
+		$verify_link = url('/verify_user_via_link/'.base64_encode($user->id).'/'.$link_verify_token);
+		User::where('id', $user->id)->update(['link_verify' => $link_verify_token]);		
+		/* send link in email */
+		
         return response()->json([
             'status' => 'success',
             'message' => 'User created successfully',

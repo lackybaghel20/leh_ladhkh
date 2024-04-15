@@ -25,6 +25,7 @@ class AdminController extends Controller
         return view('home.index',compact('nav_bar'));
     }
 
+	
 	public function manage_users(Request $request)
     {
 		 if (!Auth::check()) {			 				
@@ -358,5 +359,19 @@ class AdminController extends Controller
         Vehicle_names::find($id)->delete();
         return response()->json(['success'=>'Vehicle name deleted successfully.']);
     }
+	
+	public function verify_user_via_link($user_id='',$token='')
+    {
+		$user_id = base64_decode($user_id);
+		$token = $token;
+		$check_link = User::select(["id"])->where('id', $user_id)->where('link_verify', $token)->get();
+		if (is_null($check_link->first())) {
+            return redirect()->to('login')
+                ->withErrors("Link expired");
+        }				
+		User::where('id', $user_id)->update(['link_verify' => '']);		
+		return redirect()->to('login')->withErrors("Account verified successfully");        
+    }
+	
 	
 }
