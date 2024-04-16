@@ -19,7 +19,7 @@ class LoginRegisterController extends Controller
 {
 	public function __construct()
     {
-        $this->middleware('auth:api', ['except' => ['login','register','refresh','logout','token_mismatch']]);
+        $this->middleware('auth:api', ['except' => ['login','register','refresh','logout','token_mismatch','resend_otp','login_with_otp']]);
     }
      /**
      * Register a new user.
